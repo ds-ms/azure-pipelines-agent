@@ -14,6 +14,10 @@ namespace Microsoft.VisualStudio.Services.Agent.Capabilities
 
         private const int IgnoreValueLength = 1024;
 
+        private const string KubernetesServiceHost = "KUBERNETES_SERVICE_HOST";
+
+        private const string KubernetesNamespacePathInPod = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
+
         private static readonly string[] s_wellKnownIgnored = new[]
         {
             "comp_wordbreaks",
@@ -55,6 +59,11 @@ namespace Microsoft.VisualStudio.Services.Agent.Capabilities
                     Trace.Info($"Ignore: '{ignore}'");
                     ignored.Add(ignore); // Handles duplicates gracefully.
                 }
+            }
+
+            if (variables.Contains(KubernetesServiceHost))
+            {
+                variables.Add("KUBERNETES_NAMESPACE", await File.ReadAllTextAsync(@KubernetesNamespacePathInPod, cancellationToken));
             }
 
             // Get filtered env vars.
