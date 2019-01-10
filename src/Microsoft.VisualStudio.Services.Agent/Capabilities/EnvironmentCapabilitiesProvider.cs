@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Microsoft.VisualStudio.Services.Agent.Capabilities
 {
@@ -61,9 +62,9 @@ namespace Microsoft.VisualStudio.Services.Agent.Capabilities
                 }
             }
 
-            if (variables.Contains(KubernetesServiceHost))
+            if (File.Exists(KubernetesNamespacePathInPod))
             {
-                variables.Add("KUBERNETES_NAMESPACE", await File.ReadAllTextAsync(@KubernetesNamespacePathInPod, cancellationToken));
+                variables.Add("KUBERNETES_NAMESPACE", await File.ReadAllTextAsync(KubernetesNamespacePathInPod, cancellationToken));
             }
 
             // Get filtered env vars.
