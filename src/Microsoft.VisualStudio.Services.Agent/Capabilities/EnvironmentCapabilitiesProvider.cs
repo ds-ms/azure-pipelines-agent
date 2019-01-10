@@ -15,8 +15,6 @@ namespace Microsoft.VisualStudio.Services.Agent.Capabilities
 
         private const int IgnoreValueLength = 1024;
 
-        private const string KubernetesServiceHost = "KUBERNETES_SERVICE_HOST";
-
         private const string KubernetesNamespacePathInPod = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
 
         private static readonly string[] s_wellKnownIgnored = new[]
@@ -62,9 +60,9 @@ namespace Microsoft.VisualStudio.Services.Agent.Capabilities
                 }
             }
 
-            if (File.Exists(KubernetesNamespacePathInPod))
+            if (File.Exists(KubernetesNamespacePathInPod)) // Detecting if pod is running inside kubernetes cluster
             {
-                variables.Add("KUBERNETES_NAMESPACE", await File.ReadAllTextAsync(KubernetesNamespacePathInPod, cancellationToken));
+                variables.Add("KUBERNETES_NAMESPACE", File.ReadAllText(KubernetesNamespacePathInPod));
             }
 
             // Get filtered env vars.
